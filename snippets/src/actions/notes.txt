@@ -1,0 +1,7 @@
+'actions' folder is created because we can't create 'server actions' inside client side component or CSR.
+To use server actions inside client side component, we will create all the server-actions here in this folder called actions
+
+We will create server actions and then export it. Later inside CSR component will we import these server-actions. In this way,
+we don't have to worry about creating server action inside client side component.
+
+

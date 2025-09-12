@@ -1,0 +1,157 @@
+/*
+Everything about [id]
+
+1.
+[id] → The square brackets tell Next.js that this is a dynamic route segment. So,
+   ---- app/snippet/[id]/page.tsx -> e.g   /snippet/123
+means that Next.js will render this page whenever a user visits /snippet/something
+
+2.
+[] --> tells Next.js it’s a dynamic segment
+The name inside [] (id, slug, etc.) becomes the key in params. e.g params.id, params.slug
+We can name anything like [id], [slug], [product]
+
+
+NOTE: The name 'id' has nothing to do with id present in model or snippet.id
+
+
+*/
+
+---------xxxxxxxxxxx--------------------------------------
+
+
+/*
+
+Everything about 'params' in Next.js
+
+1.
+In Next.js App Router, when you create a dynamic route like:
+    -------- app/snippet/[id]/page.tsx --------------
+
+Next.js automatically passes params to your page component:
+
+const SnippetDetailPage = ({ params }: { params: { id: string } }) => {
+  return <div>{params.id}</div>
+}
+
+
+2. 
+
+In page components using the App Router (e.g., under app/[id]/page.tsx), the params prop is a 'Promise'
+
+--- code ---
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug } = await params;
+  return <div>My Post: {slug}</div>;
+}
+
+
+"Since the params prop is a promise, you must use 'async/await' or React’s use function to access the values."
+
+*/
+
+
+
+
+-------------------------
+
+
+
+
+
+/*
+
+3. What is the difference between (await params).id and await params.id  ?
+
+-> (await params).id
+Here, you first await the whole 'params promise', which resolves to an object (e.g. { id: "123" }).
+Then, you access the .id property on the resolved object.
+
+
+-> await params.id
+Here, you are trying to access '.id' on the promise itself (params).
+But params is a Promise<{ id: string }> → a Promise does not have an .id property.
+
+
+*/
+
+
+
+------------------
+
+
+/*
+
+4. Why did we automatically get 'params' in components like SnippetDetailPage ?
+
+In Next.js App Router (app/ directory), a page component automatically gets params whenever its route 
+path contains dynamic segments ([]).
+
+Example:
+i. Dynamic Route 
+app/blog/[slug]/page.tsx
+Visit ->  /blog/hello-world → params = { slug: "hello-world" }
+
+
+ii. Nested dynamic route
+app/snippet/[id]/edit/page.tsx
+Visit ->  /snippet/123/edit → params = { id: "123" }
+
+In the above 2nd example, 'id' is the only one part of params not 'edit' because 'id' is the only 'dynamic part of route' not 'edit' 
+
+iii. Catch-all route
+app/docs/[...slug]/page.tsx
+Visit ->  /docs/getting/started → params = { slug: ["getting", "started"] }
+
+
+*/
+
+
+----------------
+
+
+/*
+
+Everything about -> notFound() and not-found.tsx
+
+Q. What is notFound() in Next.js?
+
+- notFound() is a function provided by Next.js.
+- When you call it inside a server component (like a page or a route handler), Next.js will trigger the 
+404 page (Not Found UI).
+
+It’s basically Next.js’s built-in way to handle dynamic routes or missing data.
+
+👉 So in short:
+- Use notFound() when you detect missing/invalid data in your route.
+- Use not-found.js to customize what the user sees in that case.
+
+NOTE: The file must be name not-found.js (or not-found.tsx)
+
+---- MORE ABOUT notFound() and not-found.js ------
+
+🔹notFound() (function from next/navigation)
+
+Where: Used inside your page.tsx, layout, or server component.
+What it does: Tells Next.js → “This page/data doesn’t exist.”
+Effect: Immediately stops rendering the page and shows the closest not-found.js file (if available).
+
+
+🔹 not-found.js (UI file)
+
+Where: Created inside a route folder (e.g. /app/blog/[id]/not-found.js).
+What it does: Defines the custom UI that will be shown when notFound() is triggered 
+(or when user hits a non-existing route inside that segment).
+
+
+🔹 Relationship
+
+- You call notFound() inside page.tsx when you want to stop rendering.
+- Next.js will look for the nearest not-found.js to display.
+- If it doesn’t find one locally, it will fall back to the global app/not-found.js.
+
+*/

@@ -1,0 +1,28 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Snippet {
+  id Int @id @default(autoincrement())
+  title String
+  code String
+}
+
+// Prisma Setup
+
+// 1. Install prisma -> 'npm i prisma'
+// 2. Initialize Prisma -> 'npx prisma init' -> This will create prisma/schema.prisma and .env file
+// 3. Inside .env file configure your db. DATABASE_URL="postgresql://user:password@localhost:5432/mydb?schema=public"
+// 4. Define your schema/model/blueprint
+// 5. Run migration to create db tables -> 'npx prisma migrate dev --name <migration-name>'
+
+// Prisma setup is done. More steps
+
+// 6. Use prisma client in code.
+// 7. Prisma studio, a nice GUI by prisma to inspect db -> 'npx prisma studio'

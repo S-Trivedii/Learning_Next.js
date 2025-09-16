@@ -121,4 +121,4 @@ Here:
 
 ## Does each server action have `formData` as parameter?
 
-Yes, if used with a form (<form action={serverAction}>) → it always receives (prevState, formData).
+Yes, if used with a form (`<form action={serverAction}>`) → it always receives `(prevState, formData)`.

@@ -37,7 +37,8 @@ const SnippetDetailPage = ({ params }: { params: { id: string } }) => {
 
 2. 
 
-In page components using the App Router (e.g., under app/[id]/page.tsx), the params prop is a 'Promise'
+In page components using the App Router (e.g., under app/[id]/page.tsx), the params prop is a 
+'Promise'
 
 --- code ---
 export default async function Page({
@@ -50,7 +51,8 @@ export default async function Page({
 }
 
 
-"Since the params prop is a promise, you must use 'async/await' or React’s use function to access the values."
+"Since the params prop is a promise, you must use 'async/await' or React’s use function to access the 
+values."
 
 */
 
@@ -88,8 +90,8 @@ But params is a Promise<{ id: string }> → a Promise does not have an .id prope
 
 4. Why did we automatically get 'params' in components like SnippetDetailPage ?
 
-In Next.js App Router (app/ directory), a page component automatically gets params whenever its route 
-path contains dynamic segments ([]).
+In Next.js App Router (app/ directory), a page component automatically gets params whenever its 
+route path contains dynamic segments ([]).
 
 Example:
 i. Dynamic Route 
@@ -101,7 +103,8 @@ ii. Nested dynamic route
 app/snippet/[id]/edit/page.tsx
 Visit ->  /snippet/123/edit → params = { id: "123" }
 
-In the above 2nd example, 'id' is the only one part of params not 'edit' because 'id' is the only 'dynamic part of route' not 'edit' 
+In the above 2nd example, 'id' is the only one part of params not 'edit' because 'id' is the only 
+'dynamic part of route' not 'edit' 
 
 iii. Catch-all route
 app/docs/[...slug]/page.tsx

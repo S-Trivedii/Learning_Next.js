@@ -50,3 +50,17 @@ const SnippetDetailPage = async ({
 };
 
 export default SnippetDetailPage;
+
+// generateStaticParams - visit notes to understand this better
+export const generateStaticParams = async () => {
+  const snippets = await prisma.snippet.findMany();
+
+  return snippets.map((snippet) => {
+    return { id: snippet.id.toString() };
+  });
+
+  // return [{id: '1'}, {id: '2'}, {id: '3'}]
+};
+
+// why toString() -> params must be a string
+// .id.toString() → ensures the ID is a string, which is required for dynamic routes in Next.js.

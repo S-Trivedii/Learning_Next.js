@@ -2,6 +2,12 @@ import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 
+// Disable caching
+// export const dynamic = "force-dynamic"; // this will force this route ('/' -> home route) to act as a dynamic route. So this route won't be cached and we will get the updated data
+
+// Time based caching (ISR - Incremental static regeneration)
+// export const revalidate = 0; // do not cache this route at all. This route is generated on every request, just like SSR
+
 export default async function Home() {
   const snippets = await prisma.snippet.findMany();
 

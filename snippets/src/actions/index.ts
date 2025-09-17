@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function saveSnippet(id: number, code: string) {
@@ -13,6 +14,8 @@ export async function saveSnippet(id: number, code: string) {
     },
   });
 
+  // even if new snippet is created it will look like due to generateStaticParams, but it is not b'coz we revalidated this path -> /snippet/[id]
+  revalidatePath(`/snippet/${id}`);
   redirect(`/snippet/${id}`);
 }
 
@@ -23,6 +26,7 @@ export const deleteSnippet = async (id: number) => {
     },
   });
 
+  revalidatePath("/"); // I want to revalidate this path (clear old cache) -> '/' when a snippet get deleted
   redirect("/");
 };
 
@@ -34,22 +38,36 @@ export async function createSnippet(
 ) {
   // "use server"; // 'use server' directive for server actions (runs only on server)
 
-  const title = formData.get("title");
-  const code = formData.get("code");
+  try {
+    const title = formData.get("title");
+    const code = formData.get("code");
 
-  if (typeof title !== "string" || title.trim() === "") {
-    return { message: "Title is required" };
+    if (typeof title !== "string" || title.trim() === "") {
+      return { message: "Title is required" };
+    }
+    if (typeof code !== "string" || code.trim() === "") {
+      return { message: "Code is required" };
+    }
+
+    await prisma.snippet.create({
+      data: {
+        title,
+        code,
+      },
+    });
+
+    // Simulating an error
+    // throw new Error("Something went wrong");
+
+    revalidatePath("/"); // revalidate this path (home route) or clear old cache when a new snippet got created
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return { message: error.message };
+    } else {
+      return { message: "Internal server error" };
+    }
   }
-  if (typeof code !== "string" || code.trim() === "") {
-    return { message: "Code is required" };
-  }
 
-  const snippet = await prisma.snippet.create({
-    data: {
-      title,
-      code,
-    },
-  });
-
+  // redirect will be outside try and catch block to work
   redirect("/"); // only works with SSR or at server side
 }
